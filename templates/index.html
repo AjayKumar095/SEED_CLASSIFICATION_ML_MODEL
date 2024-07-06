@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <title>Wheat Classifier: Predict Wheat Type</title>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="sitelogo" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5zM8.5 5a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5zM0 11.5A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm4.5.5A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm4.5.5a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5zm1.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
+        </symbol>
+    </svg>
+   <main>
+    <nav class="navbar bg-black" >
+        <div class="container-fluid ">
+          <div class="navbar-brand">
+            <svg class="bi me-2 d-inline-block" width="2.5rem" height="2.5rem" style="fill: gold;" ><use xlink:href="#sitelogo"/></svg>
+            <h4 class="h4 d-inline-block" style="color: gold;">Wheat Classifier</h4>
+          </div>
+        </div>
+      </nav>
+
+      <div class="container-fluid mt-5 mb-5">
+        <div class=" container  pt-5 pb-5 bg-warning-subtle rounded-2 shadow">
+            <p class="text-body-emphasis lead d-inline-flex">Discover our cutting-edge ML model specialized in classifying wheat seeds with precision. Our model analyzes crucial features such as area, perimeter, length of kernel, length of kernel groove, width of kernel, and compactness among others in our comprehensive seed dataset. These metrics enable precise classification and insightful data-driven decisions, enhancing agricultural efficiency and yield quality.</p><br>
+        </div>
+      </div>
+
+      <div class="container mt-5 mb-5">
+        <div class="row p-1">
+            <div class="col-sm m-auto p-1 rounded-2 shadow">
+               <form action="/predict" method="post">
+                <div class="row m-1">
+                    <div class="col-md  p-1">
+                        <label for="Area" class=" form-label">Area</label>
+                        <input type="number" class=" form-control" name="Area" step="0.001"  max="30" min="0" required>
+                    </div>
+                    <div class="col-md p-1">
+                        <label for="Perimeter" class=" form-label">Perimeter</label>
+                        <input type="number" class=" form-control" name="Perimeter" step="0.001"  max="30" min="0" required>
+                    </div>
+                    <div class="col-md  p-1">
+                        <label for="lengthOfKernel" class="form-label">Length of Kernel</label>
+                        <input type="number" class=" form-control" name="lengthOfKernel" step="0.001"  max="30" min="0" required>
+                    </div>
+                    <div class="col-md  p-1">
+                        <label for="widthOfKernel" class=" form-label">Width of Kernel</label>
+                        <input type="number" class=" form-control" name="widthOfKernel" step="0.001" max="30" min="0" required>
+                    </div>
+                </div>
+                <div class="row m-1">
+                    <div class="col-md  p-1">
+                        <label for="compactness" class=" form-label">Compactness</label>
+                        <input type="number" class="form-control" name="compactness" step="0.001"  max="30" min="0" required>
+                    </div>
+                    <div class="col-md  p-1">
+                        <label for="asymmetryCoefficient" class=" form-label">Asymmetry Coefficient</label>
+                        <input type="number" class=" form-control" name="asymmetryCoefficient" step="0.001" max="30" min="0" required>
+                    </div>
+                    <div class="col-md p-1">
+                        <label for="lengthOfKernelGroove" class=" form-label">Length of Kernel Groove</label>
+                        <input type="number" class="form-control" name="lengthOfKernelGroove" step="0.001" max="30" min="0" required>
+                    </div>
+                </div>
+                
+                <div class="row m-1">
+                    <div class="col-md  p-1">
+                        <button type="reset" class="btn btn-warning form-control">Reset</button>
+                    </div>
+                    <div class="col-md  p-1">
+                       <button type="submit" class="btn btn-primary form-control">Submit</button>
+                    </div>
+                </div>
+               </form>
+            </div>
+        </div>
+      </div>
+
+      {% if predictedvalue %}
+      <div class="container  mt-5 mb-5 rounded-2 shadow bg-primary-subtle"> 
+        <div class="row">
+            <div class="col m-auto p-3">
+                <h3 class="h3">Seed Type: {{predictedvalue[0]}}</h3>
+                <p class="lead text-body-emphasis"><strong>Brief Overview <br></strong>{{predictedvalue[1]}}</p>
+             </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <div class=" container p-2 mt-5 mb-5" >
+         <div class="row p-3">
+            <div class="col-sm">
+                <h3 class="h3">Model Used</h3>
+                <p class="lead text-body-emphasis">Our Support Vector Classifier (SVC) model is tailored to predict the type of wheat seeds—Kama, Rosa, and Canadian 
+                    with exceptional accuracy and reliability. By leveraging sophisticated algorithms and utilizing a
+                     robust dataset encompassing key features such as area, perimeter, kernel length, kernel groove length,
+                      kernel width, and compactness, our SVC model ensures precise classification. This advanced approach not only optimizes 
+                      seed sorting processes but also contributes significantly to improving agricultural productivity and sustainability.
+                       Embrace the power of our SVC model to streamline your seed classification tasks and enhance your farming operations effectively.</p>
+            </div>
+            <div class="col-sm rounded-2 shadow">
+                <h3 class="h3">Model Performance Martix</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Matrix</th>
+                            <th>Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Accuracy</td>
+                            <td>0.9762</td>
+                        </tr>
+                        <tr>
+                            <td>Precision</td>
+                            <td>0.9782</td>
+                        </tr>
+                        <tr>
+                            <td>Recall</td>
+                            <td> 0.9762</td>
+                        </tr>
+                        <tr>
+                            <td>F1-score</td>
+                            <td>0.9763</td>
+                        </tr>
+                        <tr>
+                            <td>Confusion Matrix</td>
+                            <td>
+                                <table class="table">
+                                  <tbody> 
+                                 <tr>
+                                    <td>11</td>
+                                    <td>0</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>0</td>
+                                    <td>14</td>
+                                    <td>0</td>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>0</td>
+                                    <td>16</td>
+                                </tr></tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+         </div>
+      </div>
+
+      <div class=" container-fluid mb-5 mt-5 p-2">
+        <div class=" container rounded-2 p-2">
+          <table class="table">
+              <thead >
+                  <tr>
+                      <th>Features</th>
+                      <th>Description </th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Area</td>
+                      <td>This refers to the surface area of the seed. It is usually measured in square units and gives an idea of the overall size of the seed.</td>
+                  </tr>
+                  <tr>
+                      <td>Perimeter</td>
+                      <td>This is the length of the boundary of the seed. It is measured in linear units and helps in understanding the seed's shape and size.
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Compactness</td>
+                      <td>Compactness is a derived feature that provides a measure of how closely packed the seed's shape is.</td>
+                  </tr>
+                  <tr>
+                      <td>Length of Kernel</td>
+                      <td>This is the longest dimension of the seed's kernel (the edible part inside the seed). It is measured in linear units.</td>
+                  </tr>
+                  <tr>
+                      <td>Width of Kernel</td>
+                      <td>This is the width of the seed's kernel at its widest point, measured in linear units.
+                      </td>
+                  </tr>
+                  <tr>
+                      <td>Asymmetry Coefficient</td>
+                      <td>This feature measures the asymmetry of the seed's shape. It indicates how symmetrical the seed is. A value of zero indicates perfect symmetry, while higher values indicate greater asymmetry.</td>
+                  </tr>
+                  <tr>
+                      <td>Length of Kernel Groove</td>
+                      <td>This is the length of the groove or indentation that runs along the kernel. It is also measured in linear units and provides additional shape information.</td>
+                  </tr>
+              </tbody>
+            </table>
+        </div>
+    </div>
+   </main>
+</body>
+</html>

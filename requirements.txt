@@ -1,0 +1,11 @@
+pandas
+flask
+scikit-learn
+setuptools
+joblib
+numpy
+matplotlib
+gunicorn
+seaborn
+ipykernel
+-e.
