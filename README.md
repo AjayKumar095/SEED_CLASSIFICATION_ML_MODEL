@@ -20,7 +20,7 @@ These features provide a comprehensive set of attributes that help in differenti
 ## Getting Started
 1. **Clone Repository**: Clone this repository to your local machine.
 
-git clone https://github.com/AjayKumar095/Wheat_Classifier_ML_Model
+git clone https://github.com/AjayKumar095/SEED_CLASSIFICATION_ML_MODEL.git
 
 2. **Install Dependencies**: Install required Python packages.
 3. **Create .venv environment**: I use python 3.11.9
