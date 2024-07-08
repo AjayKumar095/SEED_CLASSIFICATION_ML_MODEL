@@ -35,7 +35,6 @@ git clone https://github.com/AjayKumar095/SEED_CLASSIFICATION_ML_MODEL.git
 
 
 ## Conclusion
-### Conclusion
 
 The Seed Classification ML Model effectively differentiates between three types of wheat seeds: Kama, Rosa, and Canadian, using geometric properties of the seeds. By leveraging features such as area, perimeter, compactness, kernel length, kernel width, asymmetry coefficient, and kernel groove length, the model can accurately classify seed types with high precision and recall.
 

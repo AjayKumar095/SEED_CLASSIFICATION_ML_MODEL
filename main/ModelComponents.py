@@ -1,8 +1,8 @@
 from sklearn.model_selection import train_test_split
-from DataBase.DataQuery import insert_data
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from utils.logger import logging
+import sqlite3 as sql
 import pandas as pd 
 import os
 
@@ -12,14 +12,23 @@ class DataIntake:
     def __init__(self) -> None:
         pass
 
-    def split_data(self, row_data_path: str)-> str:
+    def split_data(self)-> str:
         
         directory='artifacts/Data'
         os.makedirs(directory, exist_ok=True)
         
         logging.info('Checking the file type in DataIntake Class.')
-        if row_data_path.endswith('.csv'):
-            df=pd.read_csv(row_data_path)
+        try:
+             ## Database Config
+            Database_path=DataBase().get_dataBase_path()
+            logging.info(Database_path)
+            connection=sql.connect(Database_path)
+            #cursor=connection.cursor()
+            
+            
+            query = "SELECT * FROM Seed_Data_"
+            df=pd.read_sql_query(query, connection)
+            logging.info(f'{str(df.head())}')
             logging.info('Reading the file as Pandas dataframe.')
             X=df.iloc[:,:-1]
             y=df['seedType']
@@ -29,25 +38,17 @@ class DataIntake:
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
             test_df=pd.concat([X_test, y_test], axis=1)
             train_df=pd.concat([X_train, y_train], axis=1)
-            
-            logging.info('Saving the data into training and test sets.')
-            TestDataFilePath=os.path.join(directory, 'TestData.csv')
-            TrainDataFilePath=os.path.join(directory, 'TrainData.csv')
-            
-            logging.info('Converting the train df and test df into csv file.')
-            test_df.to_csv(TestDataFilePath, sep=',', index=False)
-            train_df.to_csv(TrainDataFilePath, sep=',', index=False)
-            
-            logging.info('Returning the file path of Train and Test datasets.')
-            return (TrainDataFilePath, TestDataFilePath)
-        else:
-            logging.info('File must be .csv')
-            return 
     
+            logging.info('Returning the  Train and Test dataframe.')
+            return (train_df, test_df)
+        
+        except Exception as e:
+            return e
+        
     
-class DataCleaning(DataIntake):
+class DataCleaning():
     def __init__(self) -> None:
-        super().__init__()
+        pass
       
     def clean_data(self, row_data_path):
         #directory='artifacts/Data'
@@ -70,11 +71,46 @@ class DataCleaning(DataIntake):
             ])
             
             cleaned_df=pd.DataFrame(pipeline.fit_transform(row_df), columns=row_df.columns)
-            res =insert_data(clean_df=cleaned_df)
-            return res
            
-         
-print(DataCleaning().clean_data('artifacts\Data\seed_dataset.csv'))    
+            return cleaned_df
+    
+class DataBase:
+    def __init__(self) -> None:
+                    ## Database Config
+        self.__Database_path='DataBase\SeedDataBase.db'
+        self.__connection=sql.connect(self.__Database_path)
+        self.__cursor=self.__connection.cursor()
+    
+    def insert_data(self, row_data_path):
+        try:
+            Data=DataCleaning()
+            
+            clean_df=Data.clean_data(row_data_path)
+            
+            if not clean_df.empty:
+            
+                table='Seed_Data_'
+                columns=', '.join(clean_df.columns)
+                placeholders = ', '.join(['?'] * len(clean_df.columns))
+                sql_insert_query = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
+            
+                for row in clean_df.itertuples(index=False, name=None):
+                    self.__cursor.execute(sql_insert_query, row)
+                
+                self.__connection.commit()
+                self.__connection.close()
+                return 
+            else:
+                return 'Data insertion failed'
+        except Exception as e:
+            return f'Error occure {e}'     
+    
+    def get_dataBase_path(self):
+        try:
+            return self.__Database_path
+        except Exception as e:
+            return e 
+
 
         
     

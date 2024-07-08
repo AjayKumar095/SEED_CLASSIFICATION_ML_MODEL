@@ -1,10 +1,16 @@
+from flask import render_template, request, Flask
+from main.ModelComponents import DataBase
 from utils.Helper import load_model
 from utils.logger import logging
-from flask import render_template, request, Flask
+import sqlite3 as sql
 import warnings
 warnings.filterwarnings('ignore')
 
 app=Flask(__name__)
+app.secret_key='dfnsd4389knxck%$%^HGNBvhfbahdscb^%^%636478jdfbjdbj8734jbHJVHVFDV'
+
+
+
 
 @app.route('/')
 def index():
@@ -40,8 +46,13 @@ def predict():
            logging.info('Loadind Modal')
            prediced_value=model.predict(data_to_predict)
            logging.info(f'Predicting new value: {prediced_value}')
-           
 
+                                  
+           data_tuple=( float(Area),  float(Perimeter),  float(compactness),  float(lengthOfKernel),
+                              float(widthOfKernel),  float(asymmetryCoefficient), float(lengthOfKernelGroove),  int(prediced_value[0]))
+           
+           
+           insert_new_data(data=data_tuple)
            if prediced_value == 1:
                return render_template('index.html', predictedvalue=kama)
            
@@ -53,10 +64,31 @@ def predict():
             
            else:
                return render_template('index.html')
-        
+            
+
     except Exception as e:
         logging.info(e)
         return f"""<h1><center>500 ERROR</center></h1><br><p><center>{e}</center></p>"""
+
+def insert_new_data(data:tuple):
+    try:
+        ## Database Config
+        logging.info('Inserting new data points in database.')
+        database=DataBase().get_dataBase_path()
+        connection=sql.connect(database)
+        cursor=connection.cursor()
+        
+        table_name='Seed_Data_'
+        logging.info('Running the sql query.')
+        sql_insert_query = f"INSERT INTO {table_name} VALUES {data}"
+        cursor.execute(sql_insert_query)
+        connection.commit()
+        connection.close()
+        logging.info('Inserting new data points in database completed.')
+        return
+    except Exception as e:
+        logging.info(f'Error Occure While Inserting New Data: ERROR:- {e}')    
+    
 
 if __name__=="__main__":
     app.run(debug=True)

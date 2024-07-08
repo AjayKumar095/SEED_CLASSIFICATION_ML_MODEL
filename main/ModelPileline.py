@@ -1,6 +1,6 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 from utils.Helper import save_model, load_model
-from ModelComponents import DataIntake
+from ModelComponents import DataIntake, DataBase
 from utils.logger import logging
 from sklearn.svm import SVC
 import pandas as pd
@@ -13,17 +13,21 @@ class ModelTrainer:
     def __init__(self) -> None:
         pass
     logging.info('Model Trainer Class.')
-    def TrainModel(self):
+    def TrainModel(self, new_data_file_path: None):
         
         logging.info('Getting the data.')
-        Data=DataIntake()
-        row_data_file_path='artifacts\Data\seed_dataset.csv'
-        train_df_filepath, test_df_filepath=Data.split_data(row_data_path=row_data_file_path)
+        data=DataBase()
+        intake=DataIntake()
+        
+        if new_data_file_path:
+           data.insert_data(row_data_path=new_data_file_path)
+        
+        train_df, test_df=intake.split_data()
         logging.info('Getting the train and test data file path.')
         
         logging.info('Reading the data into csv file in pandas dataframe.')
-        train_df=pd.read_csv(train_df_filepath)
-        test_df=pd.read_csv(test_df_filepath)
+        #train_df=pd.read_csv(train_df_filepath)
+        #test_df=pd.read_csv(test_df_filepath)
         
         logging.info('Split the data into training and test sets.')
         X_train=train_df.iloc[:,:-1]
@@ -68,7 +72,8 @@ class PredictionPipeline():
     def Prediction(self, newdata):
         logging.info('Getting the model object and loading for predicting new datapoints.')
         Trainer=ModelTrainer()
-        modelfilepath=Trainer.TrainModel()
+#Pass the new data file path if you got new data. Do not pass existing data it will add duplicate data in database.
+        modelfilepath=Trainer.TrainModel('artifacts\Data\seed_dataset.csv') 
         model=load_model(modelfilepath)
         
         logging.info('Predicting the new data points.')
@@ -76,4 +81,3 @@ class PredictionPipeline():
         logging.info(f'Model classification for new data point {pred}.')
         return pred
         
-            

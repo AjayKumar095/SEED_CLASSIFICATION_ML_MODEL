@@ -8,3 +8,4 @@ CREATE TABLE IF NOT EXISTS Seed_Data_ (
     lengthOfKernelGroove FLOAT NOT NULL CHECK (lengthOfKernelGroove >= 0),
     seedType INTEGER  NOT NULL
 );
+DELETE FROM Seed_Data_;
