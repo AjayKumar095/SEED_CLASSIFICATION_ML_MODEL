@@ -73,11 +73,11 @@ class PredictionPipeline():
         logging.info('Getting the model object and loading for predicting new datapoints.')
         Trainer=ModelTrainer()
 #Pass the new data file path if you got new data. Do not pass existing data it will add duplicate data in database.
-        modelfilepath=Trainer.TrainModel('artifacts\Data\seed_dataset.csv') 
+        modelfilepath=Trainer.TrainModel(None) 
         model=load_model(modelfilepath)
         
         logging.info('Predicting the new data points.')
         pred=model.predict(newdata)
         logging.info(f'Model classification for new data point {pred}.')
-        return pred
+        return f'Model classification for new data point {pred}.'
         
