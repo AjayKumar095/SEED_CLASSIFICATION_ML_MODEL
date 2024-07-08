@@ -1,4 +1,7 @@
 from sklearn.model_selection import train_test_split
+from DataBase.DataQuery import insert_data
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from utils.logger import logging
 import pandas as pd 
 import os
@@ -42,10 +45,37 @@ class DataIntake:
             return 
     
     
-    
-     
+class DataCleaning(DataIntake):
+    def __init__(self) -> None:
+        super().__init__()
+      
+    def clean_data(self, row_data_path):
+        #directory='artifacts/Data'
+        #os.makedirs(directory, exist_ok=True)
         
-        
+        logging.info('Checking the file type in DataIntake Class.')
+        if row_data_path.endswith('.csv'):
+            row_df=pd.read_csv(row_data_path)
+            
+            if not pd.api.types.is_numeric_dtype(row_df['seedType']):
+                seed_type_mapping = {
+                                   'Kama': 1,
+                                   'Rosa': 2,
+                                   'Canadian': 3
+                               }
+                row_df['seedType']=row_df['seedType'].map(seed_type_mapping)
+                
+            pipeline=Pipeline([
+                ('imputer', SimpleImputer(strategy='median'))
+            ])
+            
+            cleaned_df=pd.DataFrame(pipeline.fit_transform(row_df), columns=row_df.columns)
+            res =insert_data(clean_df=cleaned_df)
+            return res
+           
+         
+print(DataCleaning().clean_data('artifacts\Data\seed_dataset.csv'))    
+
         
     
     
