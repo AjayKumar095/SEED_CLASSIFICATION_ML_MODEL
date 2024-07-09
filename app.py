@@ -43,7 +43,7 @@ def predict():
                              widthOfKernel, asymmetryCoefficient, lengthOfKernelGroove]]
            logging.info(f'Form Data collected: {data_to_predict}')
            
-           model_path=os.path.join('artifacts\Model','SVC_model.pkl' )
+           model_path=os.path.join('artifacts', 'Model', 'SVC_model.pkl')
            model=load_model(model_path)
            logging.info('Loadind Modal')
            prediced_value=model.predict(data_to_predict)
