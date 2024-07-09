@@ -4,6 +4,7 @@ from utils.Helper import load_model
 from utils.logger import logging
 import sqlite3 as sql
 import warnings
+import os
 warnings.filterwarnings('ignore')
 
 app=Flask(__name__)
@@ -42,11 +43,12 @@ def predict():
                              widthOfKernel, asymmetryCoefficient, lengthOfKernelGroove]]
            logging.info(f'Form Data collected: {data_to_predict}')
            
-           model=load_model('artifacts\Model\SVC_model.pkl')
+           model_path=os.path.join('artifacts\Model','SVC_model.pkl' )
+           model=load_model(model_path)
            logging.info('Loadind Modal')
            prediced_value=model.predict(data_to_predict)
            logging.info(f'Predicting new value: {prediced_value}')
-
+   
                                   
            data_tuple=( float(Area),  float(Perimeter),  float(compactness),  float(lengthOfKernel),
                               float(widthOfKernel),  float(asymmetryCoefficient), float(lengthOfKernelGroove),  int(prediced_value[0]))
