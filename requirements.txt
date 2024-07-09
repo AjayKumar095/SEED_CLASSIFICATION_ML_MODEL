@@ -8,5 +8,4 @@ matplotlib
 gunicorn
 seaborn
 ipykernel
-sqlite
 -e.
