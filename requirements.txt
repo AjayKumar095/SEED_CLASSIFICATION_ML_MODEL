@@ -1,4 +1,4 @@
-python
+Python==3.11.9
 pandas
 flask
 scikit-learn
